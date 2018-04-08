@@ -1,55 +1,105 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
+ * Based on Sample React Native App and react-native-voice example
  */
 
 import React, { Component } from 'react';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Alert,
-  Button
+  TouchableHighlight
 } from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+import Voice from 'react-native-voice';
 
-type Props = {};
+export class VoiceButton extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+        isRecording: false,
+        error: '',
+        results: []
+    };
+    Voice.onSpeechError = this.onSpeechError.bind(this);
+    Voice.onSpeechResults = this.onSpeechResults.bind(this);
+  }
+
+  async startRecording(e) {
+      this.setState({
+        isRecording: true,
+        error: '',
+        results: []
+      });
+
+      try {
+        await Voice.start('en-US');
+      } catch (e) {
+        console.log(e);
+      }
+  }
+  
+  async stopRecording(e) {
+    try {
+      await Voice.stop();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  onSpeechError(e) {
+    this.setState({
+      error: JSON.stringify(e.error),
+    });
+  }
+
+  onSpeechResults(e) {
+    this.setState({
+      results: e.value,
+    });
+  }
+
+  recordingPressed(e) {
+    if (this.state.isRecording) {
+      this.stopRecording(e);
+      fetch('http://127.0.0.1:5000/', {
+          method: 'POST',
+          headers: {
+              'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+              message: this.state.results
+          })
+      })
+      .then((response) => response.json())
+      .then((response) => Alert.alert(JSON.stringify(response)))
+      .catch((error) => Alert.alert(error.message));
+
+      this.setState({
+        isRecording: false,
+        error: '',
+        results: []
+      });
+    } else {
+      this.startRecording(e);
+    }
+  }
+
+  render() {
+    return (
+      <TouchableHighlight onPress={this.recordingPressed.bind(this)}>
+        <Text>{this.state.isRecording ? 'Stop' : 'Start'}</Text>
+      </TouchableHighlight>
+    );
+  }
+}
+
+
 export default class App extends Component<Props> {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-        <Button onPress={() => {
-            fetch('http://127.0.0.1:5000/', {
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: 'takeoff'
-                })
-            })
-            .then((response) => response.json())
-            .then((response) => Alert.alert(JSON.stringify(response)))
-            .catch((error) => Alert.alert(error.message));
-        }}
-        title="Send Message"/>
+        <VoiceButton/>
       </View>
     );
   }
