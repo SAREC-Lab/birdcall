@@ -23,17 +23,18 @@ export class VoiceButton extends Component {
     this.state = {
         isRecording: false,
         error: '',
-        results: []
+        results: ''
     };
     Voice.onSpeechError = this.onSpeechError.bind(this);
     Voice.onSpeechResults = this.onSpeechResults.bind(this);
   }
 
+  
   async startRecording(e) {
       this.setState({
         isRecording: true,
         error: '',
-        results: []
+        results: ''
       });
 
       try {
@@ -63,9 +64,7 @@ export class VoiceButton extends Component {
     });
   }
 
-  recordingPressed(e) {
-    if (this.state.isRecording) {
-      this.stopRecording(e);
+  sendMessage() {
       fetch(this.props.connectionUrl, {
           method: 'POST',
           headers: {
@@ -78,11 +77,26 @@ export class VoiceButton extends Component {
       .then((response) => response.json())
       .then((response) => Alert.alert(JSON.stringify(response)))
       .catch((error) => Alert.alert(error.message));
+  }
 
+  recordingPressed(e) {
+    if (this.state.isRecording) {
+      this.stopRecording(e);
+
+
+      Alert.alert(
+        'Message Recorded',
+        this.state.results,
+        [
+          {text: 'Cancel', style: 'cancel'},
+          {text: 'Send', onPress: () => this.sendMessage()}
+        ],
+      );
+      
       this.setState({
         isRecording: false,
         error: '',
-        results: []
+        results: ''
       });
     } else {
       this.startRecording(e);
@@ -115,11 +129,10 @@ export default class App extends Component<Props> {
   connectDronePressed(e) {
     AlertIOS.prompt(
       'Enter Raspberry Pi URL',
-      null,
+      `Current: ${this.state.connectionUrl}`,
       [
         {
           text: 'Cancel',
-          onPress: () => console.log('Cancelled Pressed'),
           style: 'cancel',
         },
         {
@@ -139,14 +152,16 @@ export default class App extends Component<Props> {
       <View style={styles.container}>
         <Text style={styles.header}>Birdcall</Text>
         <VoiceButton connectionUrl={this.state.connectionUrl}/>
-        <Text style={styles.smallerHeader}>Waypoints</Text>
         <View style={styles.waypointContainer}>
-            <FlatList
-              data={this.state.waypoints}
-              renderItem={({item, index}) => <Text style={styles.item}>{index + 1}. {item.key}</Text>}
-              ItemSeparatorComponent={() => <View style={{height: 1, width: '100%', backgroundColor:'#dddddd', margin: 5}}/>}/>
+            <Text style={styles.smallerHeader}>Waypoints</Text>
+            <View style={styles.listContainer}>
+                <FlatList
+                  data={this.state.waypoints}
+                  renderItem={({item, index}) => <Text style={styles.item}>{index + 1}. {item.key}</Text>}
+                  ItemSeparatorComponent={() => <View style={{height: 1, width: '100%', backgroundColor:'#dddddd', margin: 5}}/>}/>
+            </View>
+            <Button title='Add Waypoint' onPress={this.addWaypointPressed.bind(this)}/>
         </View>
-        <Button title='Add Waypoint' onPress={this.addWaypointPressed.bind(this)}/>
         <Button title='Connect to Drone' onPress={this.connectDronePressed.bind(this)}/>
       </View>
     );
@@ -155,7 +170,6 @@ export default class App extends Component<Props> {
 
 const styles = StyleSheet.create({
   voice: {
-      margin: 10,
       borderWidth: 2,
       borderColor: 'black',
       borderRadius: 5,
@@ -164,16 +178,20 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
   },
+  waypointContainer: {
+    backgroundColor: '#f5f5f5',
+    borderRadius: 5,
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     backgroundColor: 'white',
   },
-  waypointContainer: {
+  listContainer: {
     margin: 10,
     height: 155,
-    backgroundColor: '#eeeeee',
+    width: 200,
   },
   item: {
     textAlign: 'left',
