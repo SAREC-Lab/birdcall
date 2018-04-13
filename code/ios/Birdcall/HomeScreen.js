@@ -91,7 +91,8 @@ export default class HomeScreen extends Component<Props> {
                 <FlatList
                   data={this.state.waypoints}
                   renderItem={({item, index}) => <Text style={styles.item}>{item.key}. {item.name}</Text>}
-                  ItemSeparatorComponent={() => <View style={styles.line}/>}/>
+                  ItemSeparatorComponent={() => <View style={styles.line}/>}
+                />
             </View>
             <Button title='Add Waypoint' onPress={this.addWaypointPressed.bind(this)}/>
         </View>
@@ -104,7 +105,7 @@ export default class HomeScreen extends Component<Props> {
 
 const styles = StyleSheet.create({
   waypointContainer: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f7f7f7',
     borderRadius: 5,
   },
   container: {
@@ -127,6 +128,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   smallerHeader: {
+    padding: 5,
     fontSize: 24,
     textAlign: 'center',
   },

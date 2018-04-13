@@ -107,7 +107,10 @@ export default class VoiceButton extends Component {
     let iconName = this.state.isRecording ? 'stop' : 'microphone';
     let iconColor = this.state.isRecording ? 'red' : 'black';
     return (
-      <TouchableHighlight onPress={this.recordingPressed.bind(this)} style={styles.voice}>
+      <TouchableHighlight
+        onPress={this.recordingPressed.bind(this)}
+        style={styles.voice}
+        underlayColor='white'>
         <Icon name={iconName} size={96} color={iconColor}/>
       </TouchableHighlight>
     );
@@ -117,7 +120,7 @@ export default class VoiceButton extends Component {
 const styles = StyleSheet.create({
   voice: {
       borderWidth: 2,
-      borderColor: 'black',
+      borderColor: 'rgb(0,122,255)',
       borderRadius: 5,
       width: 150,
       height: 150,

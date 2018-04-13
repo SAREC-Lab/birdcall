@@ -45,7 +45,7 @@ export default class AddWaypointScreen extends Component {
           <TextInput
             style={styles.input}
             onChangeText={(text) => this.setState({lat: text})}
-            keyboardType='numeric'
+            keyboardType='numbers-and-punctuation'
           />
         </View>
         <View style={styles.labelAndInput}>
@@ -53,7 +53,7 @@ export default class AddWaypointScreen extends Component {
           <TextInput
             style={styles.input}
             onChangeText={(text) => this.setState({lon: text})}
-            keyboardType='numeric'
+            keyboardType='numbers-and-punctuation'
           />
         </View>
         <Button title='Add' onPress={this.addPressed.bind(this)}/>
