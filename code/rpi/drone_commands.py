@@ -3,8 +3,9 @@ import time
 from dronekit import connect, VehicleMode, LocationGlobalRelative
 
 
+def arm_and_takeoff(vehicle, spl):
 
-def arm_and_takeoff(vehicle, alt):
+    alt = int(spl[1])
 
     while not vehicle.is_armable:
         time.sleep(1)
@@ -23,4 +24,14 @@ def arm_and_takeoff(vehicle, alt):
             break
         time.sleep(1)
 
+
+def goto(vehicle, spl, waypoints):
+    waypoint_name = spl[-1]
+    vehicle.simple_goto(waypoints[waypoint_name])
+    print('goto')
+
+
+def add_waypoint(data, waypoints):
+    waypoints[data['name']] = LocationGlobalRelative(data['lat'], 
+                                                     data['lon'], data['alt'])
 
