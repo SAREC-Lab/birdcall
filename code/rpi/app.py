@@ -9,3 +9,12 @@ def command():
         return jsonify(success=True)
 
     return jsonify(success=False)
+
+
+@app.route('/waypoints', methods=['POST'])
+def waypoints():
+    if request.method == 'POST':
+        print(request.get_json())
+        return jsonify(success=True)
+
+    return jsonify(success=False)
