@@ -8,7 +8,8 @@ import {
   Text,
   View,
   Alert,
-  TouchableHighlight
+  TouchableHighlight,
+  ActivityIndicator
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -18,12 +19,32 @@ export default class VoiceButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
+        isReady: false,
         isRecording: false,
         error: '',
         results: []
     };
+    
     Voice.onSpeechError = this.onSpeechError.bind(this);
     Voice.onSpeechResults = this.onSpeechResults.bind(this);
+
+    const timer = setInterval(() => {
+      if (this.state.isReady) {
+        clearInterval(timer);
+      } else {
+        let connection = this.props.connectionUrl + '/status';
+        fetch(connection, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
+        .then((response) => response.json())
+        .then((response) => this.setState({'isReady': response['ready']}))
+        .catch((error) => console.log(error.message));
+      }
+    }, 1000);
+
   }
 
   
@@ -62,18 +83,20 @@ export default class VoiceButton extends Component {
   }
 
   sendMessage() {
-      fetch(this.props.connectionUrl, {
-          method: 'POST',
-          headers: {
-              'content-type': 'application/json'
-          },
-          body: JSON.stringify({
-              message: this.state.results
-          })
-      })
-      .then((response) => response.json())
-      .then((response) => Alert.alert(JSON.stringify(response)))
-      .catch((error) => Alert.alert(error.message));
+    let lowerCaseResults = this.state.results.map(s => s.toLowerCase());
+    let connection = this.props.connectionUrl + '/commands';
+    fetch(connection, {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            message: lowerCaseResults
+        })
+    })
+    .then((response) => response.json())
+    .then((response) => Alert.alert(JSON.stringify(response)))
+    .catch((error) => Alert.alert(error.message));
   }
 
   recordingPressed(e) {
@@ -87,8 +110,7 @@ export default class VoiceButton extends Component {
           [
             {text: 'Cancel', style: 'cancel'},
             {text: 'Send', onPress: () => this.sendMessage()}
-          ],
-        );
+          ]);
       } else {
         Alert.alert('No Message Recorded');
       }
@@ -104,14 +126,21 @@ export default class VoiceButton extends Component {
   }
 
   render() {
-    let iconName = this.state.isRecording ? 'stop' : 'microphone';
-    let iconColor = this.state.isRecording ? 'red' : 'black';
+    const iconName = this.state.isRecording ? 'stop' : 'microphone';
+    const iconColor = this.state.isRecording ? 'red' : 'black';
+    const element = this.state.isReady ? (
+      <Icon name={iconName} size={96} color={iconColor}/>
+    ) : (
+      <ActivityIndicator size='large' color='gray'/>
+    );
     return (
       <TouchableHighlight
         onPress={this.recordingPressed.bind(this)}
-        style={styles.voice}
-        underlayColor='white'>
-        <Icon name={iconName} size={96} color={iconColor}/>
+        style={[styles.voice, this.state.isReady ? styles.ready : styles.notReady]}
+        underlayColor='white'
+        disabled={!this.state.isReady}
+      >
+        {element}
       </TouchableHighlight>
     );
   }
@@ -120,11 +149,16 @@ export default class VoiceButton extends Component {
 const styles = StyleSheet.create({
   voice: {
       borderWidth: 2,
-      borderColor: 'rgb(0,122,255)',
       borderRadius: 5,
       width: 150,
       height: 150,
       alignItems: 'center',
       justifyContent: 'center',
+  },
+  notReady: {
+    borderColor: 'gray',
+  },
+  ready: {
+    borderColor: 'rgb(0,122,255)',
   },
 });
