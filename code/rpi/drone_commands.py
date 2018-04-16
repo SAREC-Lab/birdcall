@@ -3,35 +3,50 @@ import time
 from dronekit import connect, VehicleMode, LocationGlobalRelative
 
 
-def arm_and_takeoff(vehicle, spl):
+def takeoff(vehicle, spl):
+    
+    #default altitude is 30 meters
+    if len(spl) == 3:
+        alt = int(spl[2])
+    else:
+        alt = 30
 
-    alt = int(spl[1])
-
-    while not vehicle.is_armable:
-        time.sleep(1)
+    if not vehicle.is_armable:
+        return False
 
     vehicle.mode = VehicleMode("GUIDED")
     vehicle.armed = True
 
     while not vehicle.armed:
-        time.sleep(1)
-
+        time.sleep(.01)
+    
     vehicle.simple_takeoff(alt) 
-
-    while True:
-        if vehicle.location.global_relative_frame.alt >= alt * 0.95:
-            print("Reached target altitude")
-            break
-        time.sleep(1)
 
 
 def goto(vehicle, spl, waypoints):
-    waypoint_name = spl[-1]
-    vehicle.simple_goto(waypoints[waypoint_name])
-    print('goto')
+    name = ' '.join(spl)
+    vehicle.simple_goto(waypoints[name])
+
+def set_waypoints(data):
+    waypoints = {}
+
+    for dat in data:
+        waypoints[dat['name']] = LocationGlobalRelative(float(dat['lat']), 
+                                                        float(dat['lon']), 
+                                                        float(dat['alt']))
+
+    return True, waypoints
 
 
-def add_waypoint(data, waypoints):
-    waypoints[data['name']] = LocationGlobalRelative(data['lat'], 
-                                                     data['lon'], data['alt'])
+def return_to_launch(vehicle):
+    vehicle.mode = VehicleMode("RTL")
 
+
+def get_status(vehicle):
+
+    if vehicle is None:
+        return False
+    else:
+        return vehicle.is_armable
+
+    
