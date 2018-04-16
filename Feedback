@@ -1,0 +1,21 @@
+Your team has done an excellent job with user stories, initial code, and screen mockups.
+This is just a comment about the way the user will give commands (it represents my personal thoughts on this -- and
+is definitely not intended that you must do this).
+
+When I read your user stories I started thinking about who would use birdcall, and for what purpose, and I'm not sure that the 
+final use case would be to tell it to go to a specific waypoint (i.e., would birdcall be the best option for that?)  Anyway, you
+have allowed textual input for this.
+
+As a UAV flyer I think I might like to map out a space that I was planning to fly to before I got there -- and then have named waypoints
+and probably other landmarks.  Then I would like to say things like - 'fly close to the west side of the damm' or 'go to point A'
+which is predefined.  Maybe 'slow down'  'hover' etc.
+
+Anyway -- I could see how a fireman during the river rescue (for example) could use birdcall features -- but it would require getting
+a very deep understanding of how they might use it.
+
+I'm just making these comments -- because I don't have anything to really critique :-)
+
+Well done!
+
+I'm merging Deliverable 1 and 2 together.  
+Full points.
