@@ -28,11 +28,11 @@ def drone_handler(command_connection, waypoint_connection, status_connection):
     #initialize the drone
     sitl = dronekit_sitl.start_default()
     connection_string = sitl.connection_string()
-    vehicle = connect(connection_string, wait_ready=False)
+    vehicle = connect(connection_string, wait_ready=True)
 
     waypoints = {}
 
-    while True:
+    while vehicle.mode.name == GUIDED:
         if command_connection.poll():
             data = command_connection.recv()
             success = False
