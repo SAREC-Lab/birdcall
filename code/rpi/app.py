@@ -34,7 +34,7 @@ def drone_handler(command_connection, waypoint_connection, status_connection):
 
     while True:
 
-        if not vehicle.mode.name == 'GUIDED':
+        if vehicle.mode.name != 'GUIDED':
             continue
 
         if command_connection.poll():
@@ -106,4 +106,5 @@ def status_command():
 
     return jsonify(success=False)
 
-
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
