@@ -1,0 +1,16 @@
+[Unit]
+Description=birdcall
+After=multi-user.target
+
+[Service]
+WorkingDirectory=/home/pi/Desktop/birdcall/code/rpi
+ExecStart=/usr/bin/python /home/pi/Desktop/birdcall/code/rpi/app.py --connect '/dev/ttyUSB0'
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=birdcall
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
