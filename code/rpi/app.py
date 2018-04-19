@@ -64,14 +64,6 @@ def drone_handler(command_connection, waypoint_connection, status_connection):
 
             status_connection.send(status)
 
-command_conn, child_command_conn = mp.Pipe()
-waypoint_conn, child_waypoint_conn = mp.Pipe()
-status_conn, child_status_conn = mp.Pipe()
-
-drone_process = mp.Process(target=drone_handler, args=(child_command_conn, 
-                                                       child_waypoint_conn,
-                                                       child_status_conn))
-drone_process.start()
 
 @app.route('/commands', methods=['POST'])
 def command():
@@ -108,3 +100,12 @@ def status_command():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
+    command_conn, child_command_conn = mp.Pipe()
+    waypoint_conn, child_waypoint_conn = mp.Pipe()
+    status_conn, child_status_conn = mp.Pipe()
+
+    drone_process = mp.Process(target=drone_handler, args=(child_command_conn, 
+                                                           child_waypoint_conn,
+                                                           child_status_conn))
+    drone_process.start()
+
