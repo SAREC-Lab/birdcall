@@ -1,7 +1,6 @@
-
+import argparse
 import multiprocessing as mp
 from flask import Flask, request, jsonify
-import dronekit_sitl
 from dronekit import connect, VehicleMode
 
 from drone_commands import *
@@ -23,12 +22,19 @@ def parse_message(msg, vehicle, waypoints):
     return success
 
 
-def drone_handler(command_connection, waypoint_connection, status_connection):
+
+def drone_handler(command_connection, waypoint_connection, status_connection,
+                    connection_str):
 
     #initialize the drone
-    sitl = dronekit_sitl.start_default()
-    connection_string = sitl.connection_string()
-    vehicle = connect(connection_string, wait_ready=True)
+    if not connection_str:
+        import dronekit_sitl
+        sitl = dronekit_sitl.start_default()
+        connection_str = sitl.connection_string()
+
+    print('here1')
+    vehicle = connect(connection_str, wait_ready=False, baud=57600)
+    print('here2')
 
     waypoints = {}
 
@@ -65,6 +71,7 @@ def drone_handler(command_connection, waypoint_connection, status_connection):
             status_connection.send(status)
 
 
+
 @app.route('/commands', methods=['POST'])
 def command():
     if request.method == 'POST':
@@ -99,13 +106,20 @@ def status_command():
     return jsonify(success=False)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('--connect',
+                help='Connection target string for the drone. If it is empty, then sitl is used')
+    arguments = parser.parse_args()
+
+    connection_str = arguments.connect
+ 
     command_conn, child_command_conn = mp.Pipe()
     waypoint_conn, child_waypoint_conn = mp.Pipe()
     status_conn, child_status_conn = mp.Pipe()
 
     drone_process = mp.Process(target=drone_handler, args=(child_command_conn, 
-                                                           child_waypoint_conn,
-                                                           child_status_conn))
+                                                               child_waypoint_conn,
+                                                               child_status_conn,
+                                                               connection_str))
     drone_process.start()
-
+    app.run(host='0.0.0.0')
