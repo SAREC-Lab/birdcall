@@ -65,4 +65,3 @@ def get_status(vehicle):
         return False
     else:
         return vehicle.is_armable
-
