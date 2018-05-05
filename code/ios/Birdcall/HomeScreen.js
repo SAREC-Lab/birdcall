@@ -79,6 +79,20 @@ export default class HomeScreen extends Component<Props> {
     this.props.navigation.navigate('AddWaypoint', {returnData: this.returnData.bind(this)})
   }
 
+
+  isReady(e) {
+    let connection = this.state.connectionUrl + '/status';
+    fetch(connection, {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    })
+    .then((response) => response.json())
+    .then((response) => Alert.alert(JSON.stringify(response)))
+    .catch((error) => Alert.alert(error.message));
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -95,6 +109,7 @@ export default class HomeScreen extends Component<Props> {
             <Button title='Add Waypoint' onPress={this.addWaypointPressed.bind(this)}/>
         </View>
         <Button title='Change Pi URL' onPress={this.connectDronePressed.bind(this)}/>
+        <Button title='Is ready?' onPress={this.isReady.bind(this)}/>
       </View>
     );
   }

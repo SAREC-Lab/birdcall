@@ -19,7 +19,7 @@ export default class VoiceButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        isReady: false,
+        isReady: true,
         isRecording: false,
         error: '',
         results: []
@@ -28,7 +28,7 @@ export default class VoiceButton extends Component {
     Voice.onSpeechError = this.onSpeechError.bind(this);
     Voice.onSpeechResults = this.onSpeechResults.bind(this);
 
-    const timer = setInterval(() => {
+    /*const timer = setInterval(() => {
       if (this.state.isReady) {
         clearInterval(timer);
       } else {
@@ -43,7 +43,7 @@ export default class VoiceButton extends Component {
         .then((response) => this.setState({'isReady': response['ready']}))
         .catch((error) => console.log(error.message));
       }
-    }, 1000);
+    }, 1000);*/
 
   }
 
