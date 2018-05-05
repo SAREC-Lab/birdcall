@@ -22,7 +22,9 @@ def parse_message(msg, vehicle, waypoints):
         return False
 
     if spl[:2] == ['go', 'to']:
-        return dc.goto(vehicle, spl, waypoints)
+        print('goto received')
+        print(spl)
+        return dc.goto(vehicle, spl[2:], waypoints)
 
     if spl[:3] == ['return', 'to', 'launch']:
         return dc.return_to_launch(vehicle)
@@ -38,6 +40,7 @@ def drone_handler(command_connection, waypoint_connection, status_connection,
         conn_str = sitl.connection_string()
 
     vehicle = connect(conn_str, wait_ready=False, baud=57600)
+    vehicle.groundspeed = 5
 
     waypoints = {}
 
@@ -48,11 +51,12 @@ def drone_handler(command_connection, waypoint_connection, status_connection,
 
             if isinstance(data, dict):
                 msg = data['message']
-                success = parse_message(msg, vehicle, waypoints)
+                success = parse_message(msg[0], vehicle, waypoints)
 
             command_connection.send(success)
 
         if waypoint_connection.poll():
+            print('waypoint')
             data = waypoint_connection.recv()
             success = False
 
@@ -63,6 +67,8 @@ def drone_handler(command_connection, waypoint_connection, status_connection,
             print(waypoints)
 
         if status_connection.poll():
+            loc = vehicle.location.global_relative_frame
+            print('{}, {}, {}'.format(loc.lat, loc.lon, loc.alt))
             data = status_connection.recv()
             status = dc.get_status(vehicle)
 
