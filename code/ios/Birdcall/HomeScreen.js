@@ -30,10 +30,10 @@ export default class HomeScreen extends Component<Props> {
     };
   }
 
-  returnData(name, lat, lon) {
+  returnData(name, lat, lon, alt) {
     // create new waypoint
     let key = this.state.waypoints.length + 1;
-    let wp = {key: ''+key, lat: lat, lon: lon, name: name};
+    let wp = {key: ''+key, lat: lat, lon: lon, alt: alt, name: name};
     let waypoints = [...this.state.waypoints, wp];
 
     let connection = this.state.connectionUrl + '/waypoints';
@@ -43,9 +43,7 @@ export default class HomeScreen extends Component<Props> {
         headers: {
             'content-type': 'application/json'
         },
-        body: JSON.stringify({
-          waypoints: waypoints
-        })
+        body: JSON.stringify(waypoints)
     })
     .then((response) => response.json())
     .then((response) => {
@@ -81,6 +79,20 @@ export default class HomeScreen extends Component<Props> {
     this.props.navigation.navigate('AddWaypoint', {returnData: this.returnData.bind(this)})
   }
 
+
+  isReady(e) {
+    let connection = this.state.connectionUrl + '/status';
+    fetch(connection, {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    })
+    .then((response) => response.json())
+    .then((response) => Alert.alert(JSON.stringify(response)))
+    .catch((error) => Alert.alert(error.message));
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -96,7 +108,8 @@ export default class HomeScreen extends Component<Props> {
             </View>
             <Button title='Add Waypoint' onPress={this.addWaypointPressed.bind(this)}/>
         </View>
-        <Button title='Connect to Drone' onPress={this.connectDronePressed.bind(this)}/>
+        <Button title='Change Pi URL' onPress={this.connectDronePressed.bind(this)}/>
+        <Button title='Is ready?' onPress={this.isReady.bind(this)}/>
       </View>
     );
   }

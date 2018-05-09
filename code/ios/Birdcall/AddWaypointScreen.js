@@ -21,12 +21,13 @@ export default class AddWaypointScreen extends Component {
     this.state = {
       name: '',
       lat: '',
-      lon: ''
+      lon: '',
+      alt: '',
     }
   }
 
   addPressed(e) {
-    this.props.navigation.state.params.returnData(this.state.name, this.state.lat, this.state.lon);
+    this.props.navigation.state.params.returnData(this.state.name.toLowerCase(), this.state.lat, this.state.lon, this.state.alt);
     this.props.navigation.goBack()
   }
 
@@ -53,6 +54,14 @@ export default class AddWaypointScreen extends Component {
           <TextInput
             style={styles.input}
             onChangeText={(text) => this.setState({lon: text})}
+            keyboardType='numbers-and-punctuation'
+          />
+        </View>
+        <View style={styles.labelAndInput}>
+          <Text>Altitude</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => this.setState({alt: text})}
             keyboardType='numbers-and-punctuation'
           />
         </View>

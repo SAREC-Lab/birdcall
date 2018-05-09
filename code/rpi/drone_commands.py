@@ -35,6 +35,11 @@ def takeoff(vehicle, spl):
 
 def goto(vehicle, spl, waypoints):
     name = ' '.join(spl)
+    print('name: {}'.format(name))
+    if name in waypoints:
+        print(waypoints[name].lat)
+        print(waypoints[name].lon)
+        print(waypoints[name].alt)
     vehicle.simple_goto(waypoints[name])
     return True
 
@@ -60,4 +65,3 @@ def get_status(vehicle):
         return False
     else:
         return vehicle.is_armable
-
