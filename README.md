@@ -15,3 +15,6 @@ Mobile Application (App) - the iOS app called Birdcall which is used to communic
 Waypoint - a destination defined by three characteristics: longitude, latitude, and altitude. In the birdcall application, waypoints can be given custom names which indicate the lon, lat and alt to which the drone should fly.
 
 Return to Launch - a built in command in the drone software that tells the drone to land at the place from which it took off.
+
+## The Team
+![Picture not Found](docs/img/nd_fresh_team.png?raw=true "Team")
