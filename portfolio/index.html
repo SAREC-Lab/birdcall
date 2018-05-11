@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <meta name="description" content="Birdcall">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <title>Birdcall</title>
+    </head>
+
+    <body>
+        <header>
+            <h1>Birdcall</h1>
+        </header>
+        
+        <main>
+            <div id="contents">
+                <h2>Contents</h2>
+                <ul>
+                    <li><a href="#vision">Vision Statement</a></li>
+                    <li><a href="#glossary">Glossary</a></li>
+                    <li><a href="#process">Development Process</a></li>
+                    <li><a href="#requirements">User Stories</a></li>
+                    <li><a href="#installation">Installation</a></li>
+                    <li><a href="#guide">User Guide</a></li>
+                    <li><a href="#hazards">Hazards</a></li>
+                    <li><a href="#architecture">Architecture</a></li>
+                    <li><a href="#testing">Testing</a></li>
+                    <li><a href="#video">Video</a></li>
+                    <li><a href="#presentation">Presentation</a></li>
+                    <li><a href="#team">Team Birdwatchers</a></li>
+                </ul>
+            </div>
+            
+            <div id="vision">
+                <h2>Vision Statement</h2>
+                <p>Birdcall is a mobile phone application that enables the user to control their drone using their voice. The user will speak commands into the app, which will communicate with a Raspberry Pi to send commands to the drone. The user will be able to set up waypoints through an on screen UI, since it would be cumbersome to speak coordinates.</p>
+                <p>Our motivation for this project was to explore an alternative way of controlling drones. If this project was further developed, we see many potential advantages of having a more hands free way of flying drones. One example could be a firefighter who is controlling a drone using his voice while his hands are busy with another task. Another example could be a photographer who uses a drone to get a different angle on a shot while also controlling a camera on the ground:</p>
+                <img src="images/wedding.png" alt="wedding" class="architecture"/>
+            </div>
+            
+            <div id="glossary">
+                <h2>Glossary</h2>
+                <p><strong>Raspberry Pi (Pi):</strong> a basic, credit card sized computer that is capable of performing tasks such as running a web server. The Pi serves as a lightweight solution for communication between the App and Drone.</p>
+                <p><strong>Drone Server:</strong> the web server being run on the Rasberry Pi. Responsible for receiving communication from the App and sending flight commands to the Drone.</p>
+                <p><strong>Mobile Application (App):</strong> the iOS app called Birdcall which is used to communicate with the server.</p>
+                <p><strong>Waypoint:</strong> a destination defined by three characteristics: longitude, latitude, and altitude. In the birdcall application, waypoints can be given custom names which indicate the lon, lat and alt to which the drone should fly.</p>
+                <p><strong>Return to Launch:</strong> a built in command in the drone software that tells the drone to land at the place from which it took off.</p>
+                <p><strong>SITL:</strong> an acronym for software in the loop. In the context of this project, it is a simulation environment for drones.</p>
+            </div>
+            
+            <div id="process">
+                <h2>Development Process</h2>
+                <p>We used an Agile development process for this project. We split up the project into a series of week long sprints. </p>
+                <p><strong>Week 10:</strong> Define users stories, assign user stories for first sprint, design screen mockups, create architectural sketch, and look into offline NLP libraries.</p>
+                <p><strong>Week 11:</strong> Write architectural spike that allows us to speak into a basic app, send it to a Raspberry Pi, and print what we said.</p>
+                <p><strong>Week 12:</strong> Connect Raspberry Pi to the drone and figure out how to communicate between the phone and the Raspberry Pi out on the flying field. WiFi? Bluetooth? The deliverable is a drone that can respond to a voice command to takeoff.</p>
+                <p><strong>Week 13:</strong> Further develop the UI and add support for more of voice commands. The deliverable is a fully functioning version of the app that allows the user to issue  commands for takeoff, flying to waypoints, and returning to launch.</p>
+                <p><strong>Week 14:</strong> Last touch ups and testing of application. The deliverable is the final project demonstrated at the flying field.</p>
+            </div>
+            
+            <div id="requirements">
+                <h2>User Stories</h2>
+                <ol>
+                    <li><strong>As a user, I want to control the drone with my voice.</strong>
+                        <ol>
+                            <li>Create useful design artifacts in the process of creating an overall design.
+                                <ol>
+                                    <li>Architectural Sketches</li>
+                                    <li>User Stories</li>
+                                    <li>Design Screen Mockups</li>
+                                    <li>Look into offline Libraries</li>
+                                </ol>
+                            </li>
+                            <li>Build the control station.
+                                <ol>
+                                    <li>Setup the Raspberry Pi that we are going to use on the drone</li>
+                                    <li>Write the Mavlink connection between the server and the drone</li>
+                                    <li>Create a simple Flask server to receive incoming messages from the mobile app</li>
+                                    <li>Write code to parse the messages into drone commands</li>
+                                    <li>Write code to send commands to the drone</li>
+                                    <li>Physically attach Raspberry Pi to drone</li>
+                                    <li>Create mechanism for providing power to Pi</li>
+                                </ol>
+                            </li>
+                        </ol>
+                    </li>
+                    <li><strong>As a user, I want to be able to interact with the system through my mobile phone so I can easily use the system on the go.</strong>
+                        <ol>
+                            <li>Create a React Native mobile app to provide a way for the user to interact with the system
+                                <ol>
+                                    <li>Initialize a basic React Native app</li>
+                                    <li>Integrate the react-native-voice library so that it can recognize a voice command</li>
+                                    <li>Write code that allows the user to record their voice and then POST their message to a server</li>
+                                    <li>Connect the React mobile app with the server on the Pi</li>
+                                    <li>Figure out how to do voice to text processing offline</li>
+                                    <li>Build a working version of the screen mockups</li>
+                                </ol>
+                            </li>
+                        </ol>
+                    </li>
+                    <li><strong>As a user, I want to be able to define my own waypoints through text so I do not have to read out coordinates with my voice.</strong>
+                        <ol>
+                            <li>Add a feature to the app that allows the user to enter the waypoints through text</li>
+                            <li>Assign each waypoint a name that the user can use when saying voice commands.
+                                <ol>
+                                    <li>Example: If each waypoint is assigned a number, then the user could say “Go to waypoint 4.”</li>
+                                </ol>
+                            </li>
+                            <li>Make the app send the waypoints to the server</li>
+                            <li>Add functionality to the server that stores references to the waypoints</li>
+                        </ol>
+                    </li>
+                    <li><strong>As a user, I want to be able to tell the drone to X</strong>
+                        <ol>
+                            <li>Add functionality to the code running on the Raspberry Pi so that it can parse the incoming messages for X and then send commands to the drone to do X</li>
+                        </ol>
+                    </li>
+                </ol>
+            </div>
+            
+            <div id="installation">
+                <h2>Installation</h2>
+                <p>To begin, clone the <a href="https://github.com/SAREC-Lab/birdcall">GitHub repository for Birdcall</a> on the computer that you will use for communicating with the drone when flying. We used a Raspberry Pi, but a linux laptop would work well too, you just would not be able to mount it on the drone. To start the server, go to the directory <code>birdcall/code/rpi</code> and then run <code>python app.py --connect /dev/ttyUSB0</code> to connect to a drone, or just <code>python app.py</code> if you want to use SITL.</p>
+                <p>To install the iOS app, clone the repository onto a Mac. You will need to have Xcode and React Native installed. Go to the <a href="https://facebook.github.io/react-native/docs/getting-started.html">React Native Getting Started</a> page, click "Building Projects with Native Code", and follow the "Installing Dependencies" instructions. The development OS should be macOS and the target OS should be iOS. Next go to the <a href="https://facebook.github.io/react-native/docs/running-on-device.html">React Native Running On Device</a> page and follow the "Running your app on iOS devices" instructions. The <code>.xcodeproj</code> file is located at <code>birdcall/code/ios/Birdcall/ios/Birdcall.xcodeproj</code>.</p>
+            </div>
+            
+            <div id="guide">
+                <h2>User Guide</h2>
+                <p>This project has two parts: the server and the mobile app. To use the server, go to the directory <code>birdcall/code/rpi</code>. To make the server work with a drone, plug the dongle into the computer and then run <code>python app.py --connect /dev/ttyUSB0</code>. If you want to use SITL instead of a drone, then run <code>python app.py</code></p>
+                <p>When the user opens the Birdcall iOS app, they see the home screen:</p>
+                <img src="images/home.jpg" alt="home screen" class="screenshot"/>
+                <p>The first thing the user must do is set the URL that the app should be sending the HTTP requests to. This is the IP address of the computer and the port that the server is running on. Tapping on the "Change Pi URL" button brings up the screen that allows the user to do that:</p>
+                <img src="images/url.jpg" alt="change url" class="screenshot"/>
+                <p>Once the correct URL is entered, the next step is to confirm that the drone is ready to start receiving commands. To do this, tap on the "Is Ready?" button. This brings up a pop up that says whether or not the drone is armable:</p>
+                <img src="images/ready-true.jpg" alt="is ready?" class="screenshot"/>
+                <p>On the home page, you the user can tap on the "Add Waypoint" button to create a new waypoint. This brings up a screen that allows them to enter a name, latitude, longitude, and altitude for the waypoint. For example, in the screenshot below, a waypoint for the center of White Field is being created:
+                <img src="images/new-waypoint.jpg" alt="new waypoint" class="screenshot"/>
+                <p>Tapping on the "Add" button returns the user to the homescreen, with the name of the waypoint listed:</p>
+                <img src="images/waypoint-added.jpg" alt="waypoint added" class="screenshot"/>
+                <p>To send a command to the drone, tap on the microphone button. This starts recording the user's voice. Currently, we have support for "Take off", "Return to launch", and "Go to X", where X is the name of a waypoint. The microphone changes to a red square when the phone is recording:</p>
+                <img src="images/recording.jpg" alt="recording" class="screenshot"/>
+                <p>Tap on the red square to stop the recording. This brings up a pop up that shows the text translation of what the user said:</p>
+                <img src="images/message-recorded.jpg" alt="message recorded" class="screenshot"/>
+                <p>This screen gives the user the option to cancel the command or send it to the drone.</p>
+            </div>
+
+            <div id="hazards">
+                <h2>Hazards</h2>
+                <p>One hazard is the quality of the speech-to-text translation. Particularly in windy or otherwise loud conditions, the speech-to-text software can misinterpret what the user said. This could lead to a dangerous scenario where the user thinks that the drone is executing the command that they said, but it is actually executing a different command. To address this, after the user stops recording, we show them the result of the speech-to-text translation. The user can then cancel the command if it is not what they said or they can send the command to the drone. This lets the user be confident that they are sending the command that they intended. If speech-to-text is improved, then this pop up could be removed to allow for more hands free control.</p>
+            </div>
+            
+            <div id="architecture">
+                <h2>Architecture</h2>
+                <img src="images/architecture.png" alt="architecture" class="architecture"/>
+                <p>Our system utilizes three main components: an iOS app, a Flask web server, and a drone. The user interacts with the mobile app to add waypoints and send commands to the drone using their voice. The app records the user’s voice and uses Apple’s speech-to-text software to translate what the user said. The app and the server communicate using HTTP. The server is being run on a Raspberry Pi. The server handles the incoming requests from the app and interacts with the drone using DroneKit-Python.</p>
+                <p>We decided to develop the mobile application using React-Native because we were more familiar with JavaScript than the Objective-C or Swift programming languages. We decided to use a Flask web server on the Raspberry Pi because it is lightweight and we are experienced with Python. This combination of technologies allowed us to achieve the goals of the project while reducing the learning curve on the individual technologies brought together to build the Birdcall system.</p>
+            </div>
+            
+            <div id="testing">
+                <h2>Testing</h2>
+                <p>The first tests that we ran involved making sure that each part of the system functioned properly on its own. For the app, this mostly involved user interaction with all its features, while sending requests to a dummy server to ensure they were in the correct format. To test the server, we sent it a series of requests that imitated what we would be receiving from the app. To ensure it was communicating with the drone properly, we had it connect to a virtual drone in SITL instead of an actual one. Once we determined that both of these were working as intended, we tested using both the app and the server together on a SITL drone. We started with commands for takeoff and return to launch. Once we confirmed that everything was working with SITL, we transitioned into using the full system on an actual drone at White Fields. A video of our test and demo can be seen below, which shows takeoff and return to launch. For this test, we kept the Raspberry Pi on the ground so we could more easily monitor and debug its performance. Due to time constraints, we were not able to test putting the Pi on the drone; however, we have all the necessaries systems in place, such as attaching the Pi using a 3D printed piece and powering it with the drone’s battery.</p>
+
+                <p>We successfully tested flying to waypoints in SITL. Unfortunately, when we went back to the flying fields, we experienced issues with the drone hardware and batteries, which left us unable to confirm the simulation results at the field.
+</p>
+            </div>
+            
+            <div id="video">
+                <h2>Video</h2>
+                    <iframe src="https://drive.google.com/file/d/1g9V1lvh8OU_EvLNS3JNsDpHGtuM7PTdU/preview" width="640" height="480"></iframe>
+            </div>
+
+            <div id="presentation">
+                <h2>Final Presentation</h2>
+                <a href="https://docs.google.com/presentation/d/1eUm1VUtk589TrQPE73M65gIwOtWEgRK6cXAHDdpFEZA/edit?usp=sharing">Link to Slides</a>
+            </div>
+
+            <div id="team">
+                <h2>Team Birdwatchers</h2>
+                <ul>
+                    <li><a href="mailto:rbrannin@nd.edu">Royce Branning</a></li>
+                    <li><a href="mailto:dkerriga@nd.edu">Dan Kerrigan</a></li>
+                    <li><a href="mailto:mkrumdi1@nd.edu">Michael Krumdick</a></li>
+                </ul>
+            </div>
+        </main>
+    </body>
+</html>
